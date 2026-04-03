@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- 🔷 NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">StudentMS</a>
+    <div class="navbar-nav">
+        <a class="nav-link active" href="/">Dashboard</a>
+        <a class="nav-link" href="/students">Students</a>
+        <a class="nav-link" href="/attendance">Attendance</a>
+        <a class="nav-link" href="/exams">Exams</a>
+        <a class="nav-link" href="/results">Results</a>
+    </div>
+</nav>
+
+<!-- 🔷 MAIN CONTAINER -->
+<div class="container mt-4">
+
+    <h3 class="mb-4">📊 Dashboard Overview</h3>
+
+    <!-- 🔷 SUMMARY CARDS -->
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card dashboard-card blue">
+                <i class="fa fa-users"></i>
+                <h6>Total Students</h6>
+                <h2>{{ total_students }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card dashboard-card green">
+                <i class="fa fa-check-circle"></i>
+                <h6>Present Today</h6>
+                <h2>{{ present_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card dashboard-card red">
+                <i class="fa fa-times-circle"></i>
+                <h6>Absent Today</h6>
+                <h2>{{ absent_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card dashboard-card purple">
+                <i class="fa fa-chart-line"></i>
+                <h6>Average Marks</h6>
+                <h2>{{ avg_marks }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 🔷 INFO SECTION -->
+    <div class="card mt-4 p-4">
+        <h5>📌 Project Summary</h5>
+        <p>
+            This Student Management System is developed using
+            <strong>Python (Flask)</strong> and <strong>SQL Server</strong>.
+            It includes modules for student records, attendance tracking,
+            exam management, result processing, and performance monitoring.
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

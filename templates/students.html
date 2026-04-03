@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">🎓 Students</h3>
+
+<!-- ADD STUDENT BUTTON -->
+<button class="btn btn-primary mb-3"
+        data-toggle="modal"
+        data-target="#addStudentModal">
+    ➕ Add Student
+</button>
+
+<!-- STUDENTS TABLE -->
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-bordered table-hover mb-0 text-center">
+            <thead class="thead-dark">
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Gender</th>
+                    <th>DOB</th>
+                    <th style="width: 160px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.StudentId }}</td>
+                    <td class="text-left">{{ s.StudentName }}</td>
+                    <td>{{ s.StudentClass }}</td>
+                    <td>{{ s.Gender }}</td>
+                    <td>{{ s.DateOfBirth }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning action-btn"
+                                onclick="openEditModal(
+                                    '{{ s.StudentId }}',
+                                    '{{ s.StudentName }}',
+                                    '{{ s.StudentClass }}',
+                                    '{{ s.Gender }}',
+                                    '{{ s.DateOfBirth }}'
+                                )">
+                            ✏️ Edit
+                        </button>
+
+                       <a href="/delete-student/{{ s.StudentId }}"
+   class="btn btn-sm btn-danger action-btn"
+   onclick="return confirm('Are you sure you want to delete this student?')">
+    🗑 Delete
+</a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= ADD STUDENT MODAL ================= -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="post" action="/add-student" onsubmit="return validateAddForm()">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Add Student</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input class="form-control" name="name" id="addName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Class</label>
+                        <input class="form-control" name="class" id="addClass" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select class="form-control" name="gender" required>
+                            <option value="">Select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" class="form-control" name="dob" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-block">Save Student</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= EDIT STUDENT MODAL ================= -->
+<div class="modal fade" id="editStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="post" action="/update-student" onsubmit="return validateEditForm()">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">Edit Student</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="student_id" id="editId">
+
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input class="form-control" name="name" id="editName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Class</label>
+                        <input class="form-control" name="class" id="editClass" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select class="form-control" name="gender" id="editGender" required>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" class="form-control" name="dob" id="editDob" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-warning btn-block">Update Student</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= REQUIRED SCRIPTS (VERY IMPORTANT) ================= -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function openEditModal(id, name, cls, gender, dob) {
+    $("#editId").val(id);
+    $("#editName").val(name);
+    $("#editClass").val(cls);
+    $("#editGender").val(gender);
+    $("#editDob").val(dob);
+    $("#editStudentModal").modal("show");
+}
+
+function validateAddForm() {
+    if ($("#addName").val().trim() === "") {
+        alert("Name is required");
+        return false;
+    }
+    return true;
+}
+
+function validateEditForm() {
+    if ($("#editName").val().trim() === "") {
+        alert("Name is required");
+        return false;
+    }
+    return true;
+}
+</script>
+
+<style>
+/* SAME SIZE ACTION BUTTONS */
+.action-btn {
+    min-width: 70px;
+}
+</style>
+
+{% endblock %}

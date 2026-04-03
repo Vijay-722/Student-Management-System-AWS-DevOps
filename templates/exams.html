@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Exams{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>📝 Exams</h3>
+    <button class="btn btn-primary" onclick="openAddExam()">
+        ➕ Add Exam
+    </button>
+</div>
+
+<!-- ================= EXAMS TABLE ================= -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-bordered table-hover mb-0 text-center align-middle">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width:8%">ID</th>
+                    <th>Exam Name</th>
+                    <th>Date</th>
+                    <th style="width:22%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for e in exams %}
+                <tr>
+                    <td>{{ e.ExamId }}</td>
+                    <td>{{ e.ExamName }}</td>
+                    <td>{{ e.ExamDate.strftime('%d-%m-%Y') }}</td>
+                    <td>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <button
+                                class="btn btn-sm btn-warning mr-2 edit-btn"
+                                data-id="{{ e.ExamId }}"
+                                data-name="{{ e.ExamName }}"
+                                data-date="{{ e.ExamDate.strftime('%Y-%m-%d') }}">
+                                ✏ Edit
+                            </button>
+
+                            <a href="/delete-exam/{{ e.ExamId }}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this exam?')">
+                               🗑 Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-muted py-3">
+                        No exams added yet
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= ADD EXAM MODAL ================= -->
+<div class="modal fade" id="addExamModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="/add-exam">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">➕ Add Exam</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Exam Name</label>
+                        <input name="exam_name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Exam Date</label>
+                        <input type="date" name="exam_date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================= EDIT EXAM MODAL ================= -->
+<div class="modal fade" id="editExamModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="/update-exam">
+                <input type="hidden" name="exam_id" id="editExamId">
+
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">✏ Edit Exam</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Exam Name</label>
+                        <input name="exam_name" id="editExamName" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Exam Date</label>
+                        <input type="date" name="exam_date" id="editExamDate"
+                               class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-warning">Update</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+function openAddExam() {
+    $('#addExamModal').modal('show');
+}
+
+$(document).ready(function () {
+    $('.edit-btn').on('click', function () {
+        $('#editExamId').val($(this).data('id'));
+        $('#editExamName').val($(this).data('name'));
+        $('#editExamDate').val($(this).data('date'));
+        $('#editExamModal').modal('show');
+    });
+});
+</script>
+
+{% endblock %}

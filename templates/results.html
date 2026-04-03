@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>📊 Results</h3>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addResultModal">
+        ➕ Add Result
+    </button>
+</div>
+
+<!-- ================= RESULTS TABLE ================= -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-bordered table-hover mb-0 text-center align-middle">
+            <thead class="thead-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Exam</th>
+                    <th>Maths</th>
+                    <th>Science</th>
+                    <th>English</th>
+                    <th>Total</th>
+                    <th>Grade</th>
+                    <th style="width:180px">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in results %}
+                <tr>
+                    <td>{{ r.StudentName }}</td>
+                    <td>{{ r.ExamName }}</td>
+                    <td>{{ r.Maths }}</td>
+                    <td>{{ r.Science }}</td>
+                    <td>{{ r.English }}</td>
+                    <td><strong>{{ r.Total }}</strong></td>
+                    <td>
+                        <span class="badge badge-info px-3">{{ r.Grade }}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-warning edit-btn"
+                                data-id="{{ r.ResultId }}"
+                                data-student="{{ r.StudentId }}"
+                                data-exam="{{ r.ExamId }}"
+                                data-maths="{{ r.Maths }}"
+                                data-science="{{ r.Science }}"
+                                data-english="{{ r.English }}">
+                                ✏ Edit
+                            </button>
+
+                            <a href="/delete-result/{{ r.ResultId }}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this result?')">
+                               🗑 Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-muted py-3">
+                        No results added yet
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= ADD RESULT MODAL ================= -->
+<div class="modal fade" id="addResultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="post" action="/add-result">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">➕ Add Result</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body row">
+                    <div class="col-md-6 form-group">
+                        <label>Student</label>
+                        <select name="student_id" class="form-control" required>
+                            {% for s in students %}
+                            <option value="{{ s.StudentId }}">{{ s.StudentName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label>Exam</label>
+                        <select name="exam_id" class="form-control" required>
+                            {% for e in exams %}
+                            <option value="{{ e.ExamId }}">{{ e.ExamName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label>Maths</label>
+                        <input type="number" name="maths" class="form-control" min="0" max="100" required>
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label>Science</label>
+                        <input type="number" name="science" class="form-control" min="0" max="100" required>
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label>English</label>
+                        <input type="number" name="english" class="form-control" min="0" max="100" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================= EDIT RESULT MODAL ================= -->
+<div class="modal fade" id="editResultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="post" action="/update-result">
+                <input type="hidden" name="result_id" id="editResultId">
+
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">✏ Edit Result</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body row">
+                    <div class="col-md-6 form-group">
+                        <label>Student</label>
+                        <select name="student_id" id="editStudent" class="form-control">
+                            {% for s in students %}
+                            <option value="{{ s.StudentId }}">{{ s.StudentName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label>Exam</label>
+                        <select name="exam_id" id="editExam" class="form-control">
+                            {% for e in exams %}
+                            <option value="{{ e.ExamId }}">{{ e.ExamName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label>Maths</label>
+                        <input type="number" id="editMaths" name="maths" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label>Science</label>
+                        <input type="number" id="editScience" name="science" class="form-control">
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label>English</label>
+                        <input type="number" id="editEnglish" name="english" class="form-control">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-warning">Update</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.body.addEventListener("click", function (e) {
+        if (e.target.classList.contains("edit-btn")) {
+
+            const btn = e.target;
+
+            document.getElementById("editResultId").value = btn.dataset.id;
+            document.getElementById("editStudent").value = btn.dataset.student;
+            document.getElementById("editExam").value = btn.dataset.exam;
+            document.getElementById("editMaths").value = btn.dataset.maths;
+            document.getElementById("editScience").value = btn.dataset.science;
+            document.getElementById("editEnglish").value = btn.dataset.english;
+
+            $('#editResultModal').modal('show');
+        }
+    });
+
+});
+</script>
+{% endblock %}

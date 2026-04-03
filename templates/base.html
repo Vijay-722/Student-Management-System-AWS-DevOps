@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}StudentMS{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="d-flex">
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="sidebar bg-dark text-white p-3" style="min-width:240px; height:100vh;">
+        <h4 class="text-center mb-4">StudentMS</h4>
+
+        <a class="d-block mb-2 text-white" href="/">
+            <i class="fa fa-home mr-2"></i> Dashboard
+        </a>
+
+        <a class="d-block mb-2 text-white" href="/students">
+            <i class="fa fa-user-graduate mr-2"></i> Students
+        </a>
+
+        <a class="d-block mb-2 text-white" href="/attendance">
+            <i class="fa fa-calendar-check mr-2"></i> Attendance
+        </a>
+
+        <a class="d-block mb-2 text-white" href="/exams">
+            <i class="fa fa-file-alt mr-2"></i> Exams
+        </a>
+
+        <a class="d-block mb-4 text-white" href="/results">
+            <i class="fa fa-chart-bar mr-2"></i> Results
+        </a>
+
+        {% if session.user_id %}
+            <a class="btn btn-danger btn-sm btn-block" href="/logout">
+                <i class="fa fa-sign-out-alt mr-1"></i> Logout
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+    <div class="content flex-grow-1 p-4">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+<!-- ================= REQUIRED JS (ORDER MATTERS) ================= -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

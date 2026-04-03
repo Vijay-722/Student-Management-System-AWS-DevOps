@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Attendance{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">📅 Mark Attendance ({{ today }})</h4>
+    </div>
+
+    <div class="card-body">
+        <form method="post" action="/mark-attendance">
+
+            <table class="table table-bordered table-hover text-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Status</th>
+                        <th>Monthly</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for s in students %}
+                    <tr>
+                        <td class="text-left">{{ s[1] }}</td>
+
+                        <td>
+                            <!-- Required array-style naming -->
+                            <input type="hidden" name="student_id[]" value="{{ s[0] }}">
+
+                            <select name="status[]" class="form-control" required>
+                                <option value="">-- Select --</option>
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-sm btn-info"
+                                    onclick="showMonthly({{ s[0] }}, '{{ s[1] }}')">
+                                📊 View
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="text-right">
+                <button type="submit" class="btn btn-success">
+                    💾 Save Attendance
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- ================= MONTHLY ATTENDANCE MODAL ================= -->
+<div class="modal fade" id="monthlyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="monthlyTitle"></h5>
+                <button class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+    <h6 class="mb-3">📊 Monthly Summary</h6>
+
+    <p>✅ Present: <strong id="presentCount">0</strong></p>
+    <p>❌ Absent: <strong id="absentCount">0</strong></p>
+
+    <hr>
+
+    <h6>📅 Day-wise Attendance</h6>
+    <ul class="list-group mt-2" id="dayList"></ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= REQUIRED SCRIPTS ================= -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function showMonthly(studentId, studentName) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+
+    document.getElementById("monthlyTitle").innerText =
+        studentName + " - Monthly Attendance";
+
+    fetch(`/api/monthly-attendance/${studentId}/${year}/${month}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("presentCount").innerText = data.present;
+            document.getElementById("absentCount").innerText = data.absent;
+
+            const list = document.getElementById("dayList");
+            list.innerHTML = "";
+
+            if (data.days.length === 0) {
+                list.innerHTML =
+                    "<li class='list-group-item text-muted'>No attendance recorded</li>";
+                return;
+            }
+
+            data.days.forEach(d => {
+                const badge =
+                    d.status === "Present"
+                        ? "<span class='badge badge-success'>Present</span>"
+                        : "<span class='badge badge-danger'>Absent</span>";
+
+                list.innerHTML += `
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>${d.date}</span>
+                        ${badge}
+                    </li>
+                `;
+            });
+        });
+
+    $('#monthlyModal').modal('show');
+}
+</script>
+
+
+
+{% endblock %}
