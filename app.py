@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-import pyodbc
+import pymysql
 from datetime import date
 from functools import wraps
 from werkzeug.security import check_password_hash
@@ -8,12 +8,12 @@ app = Flask(__name__)
 app.secret_key = "student_management_secret"
 
 # ---------------- DATABASE CONNECTION ----------------
-conn = pyodbc.connect(
-    "DRIVER={ODBC Driver 17 for SQL Server};"
-    "SERVER=localhost;"
-    "DATABASE=StudentManagement;"
-    "Trusted_Connection=yes;"
-    "TrustServerCertificate=yes;"
+conn = pymysql.connect(
+    host="YOUR-RDS-ENDPOINT",
+    user="admin",
+    password="password123",
+    database="studentdb"
+    cursorclass=pymysql.cursors.Cursor
 )
 cursor = conn.cursor()
 
@@ -366,4 +366,4 @@ def delete_result(id):
 
 # ---------------- RUN APP ----------------
 if __name__ == "__main__":
-    app.run(host="localhost", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001)
