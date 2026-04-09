@@ -1,3 +1,4 @@
-flask
-pymysql
-werkzeug
+Flask
+pyodbc
+Werkzeug
+gunicorn
