@@ -10,12 +10,13 @@ app.secret_key = "student_management_secret"
 # ---------------- DATABASE CONNECTION ----------------
 try:
     conn = pyodbc.connect(
-        "DRIVER={ODBC Driver 17 for SQL Server};"
-        "SERVER=localhost;"
-        "DATABASE=StudentManagement;"
-        "Trusted_Connection=yes;"
-        "TrustServerCertificate=yes;"
-    )
+    "DRIVER={ODBC Driver 17 for SQL Server};"
+    "SERVER=studentmanagement.c6lo4kkyyyn7.us-east-1.rds.amazonaws.com;"
+    "DATABASE=studentdb;"
+    "UID=admin;"
+    "PWD=vijayrds8523;"
+    "TrustServerCertificate=yes;"
+ )
     cursor = conn.cursor()
 except Exception as e:
     print("Database not connected:", e)
