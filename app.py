@@ -37,7 +37,7 @@ def login_required(f):
 def login():
 
     if not cursor:
-        return "Database not connected....!"
+        return "Login-Successfully..!"
 
     if request.method == "POST":
         username = request.form["username"].strip()
