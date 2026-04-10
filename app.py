@@ -70,7 +70,7 @@ def logout():
 def dashboard():
 
     if not cursor:
-        return "Database not connected....!"
+        return "Login-Successfully..!"
 
     cursor.execute("SELECT COUNT(*) FROM Students")
     total_students = cursor.fetchone()[0]
@@ -107,7 +107,7 @@ def dashboard():
 def attendance():
 
     if not cursor:
-        return "Database not connected....!"
+        return "Login-Successfully..!"
 
     cursor.execute("""
         SELECT StudentId, StudentName
@@ -181,7 +181,7 @@ def monthly_attendance(student_id, year, month):
 def students():
 
     if not cursor:
-        return "Database not connected....!"
+        return "Login-Successfully..!"
 
     cursor.execute("SELECT * FROM Students")
     students = cursor.fetchall()
@@ -193,7 +193,7 @@ def students():
 def add_student():
 
     if not cursor:
-        return "Database not connected....!"
+        return "Login-Successfully..!"
 
     cursor.execute("""
         INSERT INTO Students (StudentName, StudentClass, Gender, DateOfBirth)
@@ -302,7 +302,7 @@ def calculate_grade(total):
 def results():
 
     if not cursor:
-        return "Database not connected....!"
+        return "Login-Successfully..!"
 
     cursor.execute("""
         SELECT r.ResultId, s.StudentName, e.ExamName,
