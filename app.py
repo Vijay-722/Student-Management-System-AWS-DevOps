@@ -8,20 +8,14 @@ app = Flask(__name__)
 app.secret_key = "student_management_secret"
 
 # ---------------- DATABASE CONNECTION ----------------
-try:
-    conn = pyodbc.connect(
+conn = pyodbc.connect(
     "DRIVER={ODBC Driver 17 for SQL Server};"
-    "SERVER=studentmanagement.c6lo4kkyyyn7.us-east-1.rds.amazonaws.com;"
-    "DATABASE=studentdb;"
-    "UID=admin;"
-    "PWD=vijayrds8523;"
+    "SERVER=localhost;"
+    "DATABASE=StudentManagement;"
+    "Trusted_Connection=yes;"
     "TrustServerCertificate=yes;"
- )
-    cursor = conn.cursor()
-except Exception as e:
-    print("Database not connected:", e)
-    conn = None
-    cursor = None
+)
+cursor = conn.cursor()
 
 # ---------------- LOGIN REQUIRED DECORATOR ----------------
 def login_required(f):
@@ -35,10 +29,6 @@ def login_required(f):
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
-    if not cursor:
-        return "Login-Successfully..!"
-
     if request.method == "POST":
         username = request.form["username"].strip()
         password = request.form["password"]
@@ -68,10 +58,6 @@ def logout():
 @app.route("/")
 @login_required
 def dashboard():
-
-    if not cursor:
-        return "Login-Successfully..!"
-
     cursor.execute("SELECT COUNT(*) FROM Students")
     total_students = cursor.fetchone()[0]
 
@@ -105,10 +91,6 @@ def dashboard():
 @app.route("/attendance")
 @login_required
 def attendance():
-
-    if not cursor:
-        return "Login-Successfully..!"
-
     cursor.execute("""
         SELECT StudentId, StudentName
         FROM Students
@@ -179,22 +161,13 @@ def monthly_attendance(student_id, year, month):
 @app.route("/students")
 @login_required
 def students():
-
-    if not cursor:
-        return "Login-Successfully..!"
-
     cursor.execute("SELECT * FROM Students")
     students = cursor.fetchall()
-
     return render_template("students.html", students=students)
 
 @app.route("/add-student", methods=["POST"])
 @login_required
 def add_student():
-
-    if not cursor:
-        return "Login-Successfully..!"
-
     cursor.execute("""
         INSERT INTO Students (StudentName, StudentClass, Gender, DateOfBirth)
         VALUES (?, ?, ?, ?)
@@ -204,7 +177,6 @@ def add_student():
         request.form["gender"],
         request.form["dob"]
     ))
-
     conn.commit()
     return redirect(url_for("students"))
 
@@ -300,10 +272,6 @@ def calculate_grade(total):
 @app.route("/results")
 @login_required
 def results():
-
-    if not cursor:
-        return "Login-Successfully..!"
-
     cursor.execute("""
         SELECT r.ResultId, s.StudentName, e.ExamName,
                r.Maths, r.Science, r.English, r.Total, r.Grade
@@ -347,9 +315,18 @@ def add_result():
         total, grade
     ))
 
+
+
+
+
     conn.commit()
     return redirect(url_for("results"))
-    
+
+
+
+
+
+
 @app.route("/update-result", methods=["POST"])
 @login_required
 def update_result():
@@ -389,4 +366,4 @@ def delete_result(id):
 
 # ---------------- RUN APP ----------------
 if __name__ == "__main__":
-   app.run(host="0.0.0.0", port=5001)
+    app.run(host="localhost", port=5001, debug=True)
